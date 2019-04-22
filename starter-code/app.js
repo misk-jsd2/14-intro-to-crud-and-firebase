@@ -17,8 +17,8 @@ $(() => {
     messagesReference.push({
       message: message,
       votes: 0,
-      user: firebase.auth().currentUser.uid,
-      email: firebase.auth().currentUser.email
+      user: messageAppAuth.currentUser.uid,
+      email: messageAppAuth.currentUser.email
     })
   })  
 
@@ -70,16 +70,16 @@ $(() => {
           let userId = e.target.parentNode.getAttribute('data-user')
           
           console.log(userId)
-          console.log(firebase.auth().currentUser.uid)
+          console.log(messageAppAuth.currentUser.uid)
           
-          if (userId === firebase.auth().currentUser.uid) {
+          if (userId === messageAppAuth.currentUser.uid) {
             messageAppReference
             .ref(`messages/${id}`)
             .remove()
               .then(() => { console.log("Remove succeeded.") })
               .catch(error => { console.log("Remove failed: " + error.message) });
           } else {
-            alert("can't delete that dude")
+            alert(`Only ${messageAppAuth.currentUser.email} can delete that!!`)
           }
         })
 
@@ -112,11 +112,11 @@ $(() => {
      * Handles the sign in button press.
      */
     function toggleSignIn() {
-      if (firebase.auth().currentUser) {
-        firebaseCurrentUser = firebase.auth().currentUser
+      if (messageAppAuth.currentUser) {
+        firebaseCurrentUser = messageAppAuth.currentUser
         console.log(firebaseCurrentUser)
         // [START signout]
-        firebase.auth().signOut();
+        messageAppAuth.signOut();
         // [END signout]
       } else {
         // firebaseCurrentUser = "Not Logged In"
@@ -132,7 +132,7 @@ $(() => {
         }
         // Sign in with email and pass.
         // [START authwithemail]
-        firebase.auth().signInWithEmailAndPassword(email, password)
+        messageAppAuth.signInWithEmailAndPassword(email, password)
         .then(response => {
           console.log(response.user.uid)
         })
@@ -170,7 +170,7 @@ $(() => {
       }
       // Sign in with email and pass.
       // [START createwithemail]
-      firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+      messageAppAuth.createUserWithEmailAndPassword(email, password).catch(function(error) {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
