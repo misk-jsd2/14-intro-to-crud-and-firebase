@@ -29,21 +29,23 @@ $(() => {
       let allMessages = results.val()
       
       for (let msg in allMessages) {        
+        // UPVOTE
         var $upVoteElement = $(`<i class="fa fa-thumbs-up pull-right"></i>`)
         $upVoteElement.on('click', (e) => {
           let id = e.target.parentNode.id
-          console.log(id)
-        })
+          let updatedUpvotes = parseInt(e.target.parentNode.getAttribute('data-votes')) + 1
+          console.log(updatedUpvotes)
 
-        // UPDATE MESSAGE WITH UPVOTE
-        var $upVoteElement = $(`<i class="fa fa-thumbs-down pull-right"></i>`)
-        $upVoteElement.on('click', (e) => {
-          let id = e.target.parentNode.id
-          console.log(id)
+          messageAppReference
+          .ref(`messages/${id}/`)
+          .update({votes: updatedUpvotes})
+            .then(() => { console.log("Update succeeded.") })
+            .catch(error => { console.log("Update failed: " + error.message) });
         }) 
 
-        // UPDATE MESSAGE WITH DOWNVOTE
+        // DOWNVOTE
         var $downVoteElement = $(`<i class="fa fa-thumbs-down pull-right"></i>`)
+
         $downVoteElement.on('click', (e) => {
           let id = e.target.parentNode.id
           console.log(id)
@@ -67,8 +69,10 @@ $(() => {
 
         var $votes = $(`<div class="pull-right">${allMessages[msg].votes}</div>`)
 
-        let $newMessage = $(`<li id=${msg}>${allMessages[msg].message}</li>`);
+        // CREATE NEW MESSAGE LI ELEMENT
+        let $newMessage = $(`<li id=${msg} data-votes=${allMessages[msg].votes}>${allMessages[msg].message}</li>`);
 
+        // APPEND ICONS TO THE LI
         $newMessage
           .append($votes)
           .append($deleteElement)
