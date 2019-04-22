@@ -3,9 +3,8 @@ var messageAppReference = firebase.database();
 var messageAppAuth = firebase.auth();
 
 $(() => {
-  var firebaseCurrentUserId = "";
+  var firebaseCurrentUser = {};
   var $messageBoardDiv = $('.message-board');
-  // console.log(messageAppReference)
 
   $('#message-form').submit(event => {
     event.preventDefault()
@@ -18,12 +17,13 @@ $(() => {
     messagesReference.push({
       message: message,
       votes: 0,
-      user: firebaseCurrentUserId
+      user: firebase.auth().currentUser.uid,
+      email: firebase.auth().currentUser.email
     })
   })  
 
   function getFanMessages() {    
-    var firebaseCurrentUser = firebase.auth().currentUser;
+    // var firebaseCurrentUser = {};
     console.log(firebaseCurrentUser)
     // console.log(firebaseCurrentUserId)
 
@@ -67,19 +67,30 @@ $(() => {
         var $deleteElement = $(`<i class="fa fa-trash pull-right delete"></i>`)
         $deleteElement.on('click', (e) => {
           let id = e.target.parentNode.id
+          let userId = e.target.parentNode.getAttribute('data-user')
           
-          messageAppReference
-          .ref(`messages/${id}`)
-          .remove()
-            .then(() => { console.log("Remove succeeded.") })
-            .catch(error => { console.log("Remove failed: " + error.message) });
+          console.log(userId)
+          console.log(firebase.auth().currentUser.uid)
+          
+          if (userId === firebase.auth().currentUser.uid) {
+            messageAppReference
+            .ref(`messages/${id}`)
+            .remove()
+              .then(() => { console.log("Remove succeeded.") })
+              .catch(error => { console.log("Remove failed: " + error.message) });
+          } else {
+            console.log("can't delete that dude")
+          }
         })
 
         // CREATE VOTES DISPLAY
         var $votes = $(`<div class="pull-right">${allMessages[msg].votes}</div>`)
 
         // CREATE NEW MESSAGE LI ELEMENT
-        let $newMessage = $(`<li id=${msg} data-votes=${allMessages[msg].votes}>${allMessages[msg].message}</li>`);
+        let $newMessage = $(`<li id=${msg} data-user=${allMessages[msg].user} data-votes=${allMessages[msg].votes}>${allMessages[msg].message}</li>`);
+        
+        // CREATE CURRENT USER DISPLAY
+        var $firebaseCurrentUser = $(`<div class="pull-right">${allMessages[msg].email}</div>`)
 
         // APPEND ICONS TO THE LI
         $newMessage
@@ -87,6 +98,7 @@ $(() => {
           .append($deleteElement)
           .append($downVoteElement)
           .append($upVoteElement)
+          .append($firebaseCurrentUser)
 
         // APPEND NEW MESSAGE TO MESSAGE BOARD  
         $messageBoardDiv
@@ -101,12 +113,13 @@ $(() => {
      */
     function toggleSignIn() {
       if (firebase.auth().currentUser) {
-        firebaseCurrentUserId = firebase.auth().currentUser.uid
-        console.log(firebaseCurrentUserId)
+        firebaseCurrentUser = firebase.auth().currentUser
+        console.log(firebaseCurrentUser)
         // [START signout]
         firebase.auth().signOut();
         // [END signout]
       } else {
+        // firebaseCurrentUser = "Not Logged In"
         var email = document.getElementById('email').value;
         var password = document.getElementById('password').value;
         if (email.length < 4) {
@@ -255,14 +268,8 @@ $(() => {
       document.getElementById('quickstart-verify-email').addEventListener('click', sendEmailVerification, false);
       document.getElementById('quickstart-password-reset').addEventListener('click', sendPasswordReset, false);
 
-
-      getFanMessages();
     }
-
-
     initApp();
-    // getFanMessages();
+    getFanMessages();
   }) // END READY
-    // window.onload = function() {
-    //   initApp();
-    // };
+
