@@ -79,7 +79,7 @@ $(() => {
               .then(() => { console.log("Remove succeeded.") })
               .catch(error => { console.log("Remove failed: " + error.message) });
           } else {
-            alert(`Only ${messageAppAuth.currentUser.email} can delete that!!`)
+            alert(`Only ${userId} can delete that!!`)
           }
         })
 
