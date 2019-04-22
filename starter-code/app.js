@@ -79,7 +79,7 @@ $(() => {
               .then(() => { console.log("Remove succeeded.") })
               .catch(error => { console.log("Remove failed: " + error.message) });
           } else {
-            console.log("can't delete that dude")
+            alert("can't delete that dude")
           }
         })
 
