@@ -190,7 +190,7 @@ $(() => {
      */
     function sendEmailVerification() {
       // [START sendemailverification]
-      firebase.auth().currentUser.sendEmailVerification().then(function() {
+      messageAppAuth.currentUser.sendEmailVerification().then(function() {
         // Email Verification sent!
         // [START_EXCLUDE]
         alert('Email Verification Sent!');
@@ -201,7 +201,7 @@ $(() => {
     function sendPasswordReset() {
       var email = document.getElementById('email').value;
       // [START sendpasswordemail]
-      firebase.auth().sendPasswordResetEmail(email).then(function() {
+      messageAppAuth.sendPasswordResetEmail(email).then(function() {
         // Password Reset Email Sent!
         // [START_EXCLUDE]
         alert('Password Reset Email Sent!');
@@ -223,13 +223,13 @@ $(() => {
     }
     /**
      * initApp handles setting up UI event listeners and registering Firebase auth listeners:
-     *  - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
+     *  - messageAppAuth.onAuthStateChanged: This listener is called when the user is signed in or
      *    out, and that is where we update the UI.
      */
     function initApp() {
       // Listening for auth state changes.
       // [START authstatelistener]
-      firebase.auth().onAuthStateChanged(function(user) {
+      messageAppAuth.onAuthStateChanged(function(user) {
         // [START_EXCLUDE silent]
         document.getElementById('quickstart-verify-email').disabled = true;
         // [END_EXCLUDE]
